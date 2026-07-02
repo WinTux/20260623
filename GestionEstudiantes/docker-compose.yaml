@@ -1,11 +1,11 @@
 version: '3.9'
 services:
   webapp:
-    image: pepe/miimagensuprema:1.1
+    image: pepito/gestionestudiantes:latest
     build: .
     ports:
-      - 8090:8080
-      - 8091:8081
+      - 9090:8080
+      - 9091:8081
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081

@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sqlserver-backup
+spec:
+  template:
+    spec:
+      containers:
+        - name: backup
+          image: mcr.microsoft.com/mssql-tools:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              sqlcmd -S sqlserver-deployment -U sa -P $SA_PASSWORD -Q "BACKUP DATABASE InstitutoX TO DISK = '/backup/institutox_$(date +%Y%m%d%H%M%S).bak'"
+          env:
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: microservicios
+                  key: SA_PASSWORD
+          volumeMounts:
+            - name: backup-almacenamiento
+              mountPath: /backup
+      restartPolicy: Never
+      volumes:
+        - name: backup-almacenamiento
+          persistentVolumeClaim:
+            claimName: backup-pvc

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campus-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: campusservice
+  template:
+    metadata:
+      labels:
+        app: campusservice
+    spec:
+      containers:
+        - name: campusservice
+          image: pepito/campus:1.0.0
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: campus-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: campusservice
+  ports:
+    - name: campusservice
+      protocol: TCP
+      port: 80
+      targetPort: 8080

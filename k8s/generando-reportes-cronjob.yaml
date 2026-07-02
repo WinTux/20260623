@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: generador-reportes
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: reportes
+              image: alpine/curl:latest
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  apk add jq
+                  ESTUDIANTES=$(curl -s http://pepe.com/api/Estudiante)
+                  CAMPUS=$(curl -s http:pepe.com/api/Historial)
+                  echo "{\"timestamp\":\"$(date -Iseconds)\",\"estudiantes\":$ESTUDIANTES,\"historial\":$CAMPUS}" > /report/reporte_$(date +%Y%m%d%H).json
+              volumeMounts:
+                - name: backup-almacenamiento
+                  mountPath: /report
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-almacenamiento
+              persistentVolumeClaim:
+                claimName: backup-pvc

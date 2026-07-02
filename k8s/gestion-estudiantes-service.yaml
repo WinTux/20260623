@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gestionestudiantes-service
+spec:
+  type: NodePort
+  selector:
+    app: gestionestudiantesservice
+  ports:
+    - name: gestionestudiantesservice
+      protocol: TCP
+      port: 80
+      targetPort: 8080

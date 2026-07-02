@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gestion-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gestionestudiantesservice
+  template:
+    metadata:
+      labels:
+        app: gestionestudiantesservice
+    spec:
+      containers:
+        - name: gestionestudiantesservice
+          image: pepito/gestionestudiantes:latest
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gestion-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: gestionestudiantesservice
+  ports:
+    - name: gestionestudiantesservice
+      protocol: TCP
+      port: 80
+      targetPort: 8080

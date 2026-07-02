@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: reinicio-de-deployments
+spec:
+  schedule: "0 3 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: reiniciador
+              image: bitnami/kubectl:latest
+              command:
+              - /bin/sh
+              - -c
+              - |
+                kubectl patch deployment gestion-deployment -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/restartedAt\":\"$(date)\"}}}}}"
+                kubectl patch deployment campus-deployment -p "{\"spec\":{\"template\":{\"metadata\":{\"annotations\":{\"kubectl.kubernetes.io/restartedAt\":\"$(date)\"}}}}}"
+          restartPolicy: OnFailure

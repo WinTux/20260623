@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-servicio
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: pepe.com
+      http:
+        paths:
+          - path: /api/Estudiante
+            pathType: Prefix
+            backend:
+              service:
+                name: gestion-clusterip-service
+                port:
+                  number: 80
+          - path: /api/Historial
+            pathType: Prefix
+            backend:
+              service:
+                name: campus-clusterip-service
+                port:
+                  number: 80
+# Falta hablar del dominio pepe.com

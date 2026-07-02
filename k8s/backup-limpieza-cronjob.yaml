@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sqlserver-backup-cleanup
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: cleaner
+              image: alpine:latest
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  find /backup -name "*.bak" -type f -mtime +7 -delete
+              volumeMounts:
+                - name: backup-almacenamiento
+                  mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-almacenamiento
+              persistentVolumeClaim:
+                claimName: backup-pvc
